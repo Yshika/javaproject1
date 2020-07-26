@@ -1,11 +1,11 @@
 ## Springboot based Java application for doing CRUD operations on a database using JDBC connection.
 
 ### Prerequisities
-Java :- 11
-<br>Spring Boot :- 2.3.1 or later
-<br>SLF4J :- 1.7
-<br>Mysql:- 5.7
-<br>Maven:- 3.6 or later
+Java :- version: 11
+<br>Spring Boot :- version: 2.3.1 or later
+<br>SLF4J :- version: 1.7
+<br>Mysql:- version: 5.7
+<br>Maven:- version: 3.6 or later
 
 ### Installing
 1. Clone the project.<br>
