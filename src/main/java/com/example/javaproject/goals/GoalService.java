@@ -1,8 +1,11 @@
 package com.example.javaproject.goals;
+import java.io.IOException;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public class GoalService {
+    Logger logger= LoggerFactory.getLogger(goalController.class);
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -24,36 +28,55 @@ public class GoalService {
         return listSale;
     }
 
-    public void save(goals goal) {
+    public void save(goals goal){
         SimpleJdbcInsert insertActor = new SimpleJdbcInsert(jdbcTemplate);
         insertActor.withTableName("goals").usingColumns("GoalId", "title", "details","eta","createDate","updateDate");
         BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(goal);
         insertActor.execute(param);
     }
 
-    public goals get(Integer GoalId) {
-        String sql = "SELECT * FROM goals WHERE GoalId = ?";
-        Object[] args = {GoalId};
-        goals goal = jdbcTemplate.queryForObject(sql, args,
-                BeanPropertyRowMapper.newInstance(goals.class));
-        return goal;
+    public goals get(Integer GoalId) throws GoalsNotFoundException{
+        try {
+            String sql = "SELECT * FROM goals WHERE GoalId = ?";
+            Object[] args = {GoalId};
+            goals goal = jdbcTemplate.queryForObject(sql, args,
+                    BeanPropertyRowMapper.newInstance(goals.class));
+            return goal;
+        }
+        catch (Exception e){
+            logger.info("Goal with id {} doesn't exists",GoalId);
+
+            throw new GoalsNotFoundException("Goal Details Doesn't Exits");
+        }
     }
 
-    public goals delete(Integer GoalId) {
-        String sql = "SELECT * FROM goals WHERE GoalId = ?";
-        Object[] args = {GoalId};
-        goals goal = jdbcTemplate.queryForObject(sql, args,
-                BeanPropertyRowMapper.newInstance(goals.class));
+    public goals delete(Integer GoalId) throws GoalsNotFoundException {
+        try{
+            String sql = "SELECT * FROM goals WHERE GoalId = ?";
+            Object[] args = {GoalId};
+            goals goal = jdbcTemplate.queryForObject(sql, args,
+                    BeanPropertyRowMapper.newInstance(goals.class));
 
-        String delsql = "DELETE FROM goals WHERE GoalId = ?";
-        jdbcTemplate.update(delsql, GoalId);
-        return goal;
+            String del = "DELETE FROM goals WHERE GoalId = ?";
+            jdbcTemplate.update(del, GoalId);
+            return goal;
+        }
+        catch (Exception e){
+            logger.info("Goal with id {} doesn't exists",GoalId);
+            throw new GoalsNotFoundException("Goal Details Doesn't Exits");
+        }
     }
 
-    public void update(goals goal, Integer GoalId) {
-        String sql = "UPDATE goals SET title=:title, details=:details, eta=:eta, createDate=createDate, updateDate=updateDate WHERE GoalId=:GoalId";
-        BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(goal);
-        NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(jdbcTemplate);
-        template.update(sql, param);
+    public void update(goals goal, Integer GoalId) throws GoalsNotFoundException {
+        try{
+            String sql = "UPDATE goals SET title=:title, details=:details, eta=:eta, createDate=createDate, updateDate=updateDate WHERE GoalId=:GoalId";
+            BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(goal);
+            NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(jdbcTemplate);
+            template.update(sql, param);
+        }
+        catch(Exception e){
+            logger.info("Goal with id {} doesn't exists",GoalId);
+            throw new GoalsNotFoundException("Goal Details Can't Be Updated");
+        }
     }
 }

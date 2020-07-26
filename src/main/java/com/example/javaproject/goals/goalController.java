@@ -41,7 +41,7 @@ public class goalController {
     @Operation(summary = "Create a new Goal",description ="Rest Endpoint that returns a object after creating a goal")
 
     @PostMapping(value = "/goals")
-    public String createGoal(@RequestBody goals goal) throws IOException {
+    public String createGoal(@RequestBody goals goal) {
 
         service.save(goal);
         return "Goal has been created Successfully";
