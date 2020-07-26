@@ -32,7 +32,7 @@ public class GoalService {
     }
 
     public goals get(Integer GoalId) {
-        String sql = "SELECT * FROM Table goals WHERE GoalId = :GoalId";
+        String sql = "SELECT * FROM goals WHERE GoalId = ?";
         Object[] args = {GoalId};
         goals goal = jdbcTemplate.queryForObject(sql, args,
                 BeanPropertyRowMapper.newInstance(goals.class));
@@ -40,18 +40,18 @@ public class GoalService {
     }
 
     public goals delete(Integer GoalId) {
-        String sql = "SELECT * FROM Table goals WHERE GoalId = :GoalId";
+        String sql = "SELECT * FROM goals WHERE GoalId = ?";
         Object[] args = {GoalId};
         goals goal = jdbcTemplate.queryForObject(sql, args,
                 BeanPropertyRowMapper.newInstance(goals.class));
 
-        String delsql = "DELETE FROM Table goals WHERE GoalId = :GoalId";
+        String delsql = "DELETE FROM goals WHERE GoalId = ?";
         jdbcTemplate.update(delsql, GoalId);
         return goal;
     }
 
     public void update(goals goal, Integer GoalId) {
-        String sql = "UPDATE Table goals SET title=:title, details=:details, eta=:eta, createDate=createDate, updateDate=updateDate WHERE GoalId=:GoalId";
+        String sql = "UPDATE goals SET title=:title, details=:details, eta=:eta, createDate=createDate, updateDate=updateDate WHERE GoalId=:GoalId";
         BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(goal);
         NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(jdbcTemplate);
         template.update(sql, param);

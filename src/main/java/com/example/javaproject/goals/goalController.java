@@ -1,6 +1,8 @@
 package com.example.javaproject.goals;
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 public class goalController {
     @Autowired
     private final GoalService service;
+
+    Logger logger= LoggerFactory.getLogger(goalController.class);
+
 
     @RequestMapping("/goals")
     public String index(){
@@ -25,6 +30,7 @@ public class goalController {
     @GetMapping("/goals/{GoalId}")
     public goals getGoalById(@PathVariable Integer GoalId){
         goals goal=service.get(GoalId);
+        logger.trace("All Goals Accessed");
         return goal;
     }
 
