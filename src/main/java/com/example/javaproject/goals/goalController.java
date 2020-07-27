@@ -44,11 +44,11 @@ public class goalController {
     }
 
     @GetMapping("/goals")
-    public List getAllGoals() {
+    public ResponseEntity<Object> getAllGoals() {
         logger.info("Request received to fetch All Goals...");
         List<goals> listGoals = service.list();
         logger.info("All Goals fetched, returning data");
-        return listGoals;
+        return new ResponseEntity<Object>(listGoals,HttpStatus.OK);
     }
     @Operation(summary = "Get goal by goalId",
             responses = {
