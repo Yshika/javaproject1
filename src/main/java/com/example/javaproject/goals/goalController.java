@@ -27,22 +27,26 @@ import org.springframework.web.bind.annotation.*;
                 contact = @Contact(url = "#", name = "Yshika", email = "yshika.agarwal@geminisolutions.com")
         )
 )
+
 @RestController
 public class goalController {
 
     @Autowired
     private final GoalService service;
-
+    //to log files
     Logger logger= LoggerFactory.getLogger(goalController.class);
 
+    //default
     @RequestMapping("/goals")
     public String index(){
         return "Greetings!";
     }
+
     public goalController(GoalService service) {
         this.service = service;
     }
 
+    //GET request
     @GetMapping("/goals")
     public ResponseEntity<Object> getAllGoals() {
         logger.info("Request received to fetch All Goals...");
@@ -56,6 +60,9 @@ public class goalController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = goals.class))),
                     @ApiResponse(responseCode = "400", description = "Goal not found")})
+
+    // GET request to out a goal detail via its ID.
+
     @GetMapping("/goals/{GoalId}")
     public ResponseEntity<Object> getGoalById(@PathVariable Integer GoalId){
         logger.info("Request received to fetch goal with goalId "+GoalId);
@@ -66,11 +73,14 @@ public class goalController {
         logger.info("Fetched Goal Accessed");
         return new ResponseEntity<Object>(goal,HttpStatus.OK);
     }
+    // POST request to CREATE a goal.
+
     @Parameter(name = "GoalName",description = "Id of the Goal",required = true)
     @Parameter(name = "GoalContent",description = "Content of the Goal",required = true)
     @Operation(summary = "Create a new Goal",description ="Rest Endpoint that returns a object after creating a goal")
 
     @PostMapping(value = "/goals")
+    //PUT request to update a goal.
     public ResponseEntity<Object>  createGoal(@RequestBody goals goal) {
         logger.info("Request received to create a new goal with goalId "+goal.getGoalId());
         if(service.check(goal.getGoalId())==null) {
@@ -84,13 +94,13 @@ public class goalController {
 
     }
     @Operation(summary = "Update a content of Goal by GoalId", responses = {
-            @ApiResponse(
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = goals.class))),
+            @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = goals.class))),
             @ApiResponse(responseCode = "400", description = "Invalid ID supplied"),
             @ApiResponse(responseCode = "404", description = "Goal not found"),
-            @ApiResponse(responseCode = "405", description = "Validation exception") })
+            @ApiResponse(responseCode = "405", description = "Validation exception")})
+
     @RequestMapping(value = "/goals/{GoalId}",method = RequestMethod.PUT)
+
     public ResponseEntity<Object>  updateGoal(@RequestBody goals newgoal, @PathVariable Integer GoalId){
         logger.info("Request received to update goal having goalId "+GoalId);
         if(service.get(GoalId)!=null) {
@@ -102,8 +112,11 @@ public class goalController {
             return new ResponseEntity<Object>("Goal Update Unsuccessful", new HttpHeaders(), HttpStatus.NOT_FOUND);
         }
     }
+
+    //DELETE request to delete a goal.
     @Operation(summary = "Delete a content of Goal by GoalId")
     @RequestMapping(value = "/goals/{GoalId}",method = RequestMethod.DELETE)
+
     public ResponseEntity<Object>  deleteGoal(@PathVariable Integer GoalId){
         logger.info("Request received to delete goal");
         if(service.get(GoalId)!=null) {

@@ -13,9 +13,11 @@ public class goals {
     private Integer eta;
     private Date createDate;
     private Date updateDate;
+    //default Constructor
     public goals(){
         super();
     }
+    //parameterized Constructor
     public goals(Integer GoalId, String title, String details, Integer eta, Date createDate, Date updateDate) {
         super();
         this.GoalId = GoalId;
@@ -28,9 +30,11 @@ public class goals {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //Getters and Setters method.
     public Integer getGoalId() {
         return GoalId;
     }
+
     public void setGoalId(Integer GoalId){
         this.GoalId=GoalId;
     }
@@ -74,6 +78,7 @@ public class goals {
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
+
  @Override
  public String toString(){
         return "Goals{" +
